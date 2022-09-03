@@ -3,7 +3,7 @@ This application makes use of the following third party libraries:
 
 ## VCTextField
 
-Copyright (c) 2022 egehan205 <Egehan.KARAKOSE@vakifbank.com.tr>
+Copyright (c) 2022 egehan205 <egehankarakose@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
