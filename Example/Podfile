@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '10.0'
+
+target 'VCTextField_Example' do
+  pod 'VCTextField', :path => '../'
+
+  target 'VCTextField_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
