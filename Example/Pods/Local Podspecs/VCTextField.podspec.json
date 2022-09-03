@@ -1,0 +1,22 @@
+{
+  "name": "VCTextField",
+  "version": "0.1.0",
+  "summary": "A short description of VCTextField.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/egehan205/VCTextField",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "egehan205": "Egehan.KARAKOSE@vakifbank.com.tr"
+  },
+  "source": {
+    "git": "https://github.com/egehan205/VCTextField.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source_files": "VCTextField/Classes/**/*"
+}

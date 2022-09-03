@@ -1,0 +1,6 @@
+framework module VCTextField {
+  umbrella header "VCTextField-umbrella.h"
+
+  export *
+  module * { export * }
+}

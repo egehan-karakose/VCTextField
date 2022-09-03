@@ -1,0 +1,16 @@
+PODS:
+  - VCTextField (0.1.0)
+
+DEPENDENCIES:
+  - VCTextField (from `../`)
+
+EXTERNAL SOURCES:
+  VCTextField:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  VCTextField: e408b3b317dc20a51d30b8c233c46cb0dbcd842f
+
+PODFILE CHECKSUM: 57d633cbbbad48b71d0671cf3d98d4e0f33eb938
+
+COCOAPODS: 1.11.3
