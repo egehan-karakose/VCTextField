@@ -22,7 +22,7 @@ pod 'VCTextField'
 
 ## Author
 
-egehan205, Egehan.KARAKOSE@vakifbank.com.tr
+Egehan Karaköse, egehankarakose@gmail.com
 
 ## License
 
