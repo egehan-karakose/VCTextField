@@ -20,6 +20,32 @@ it, simply add the following line to your Podfile:
 pod 'VCTextField'
 ```
 
+## Examples
+```ruby
+override func viewDidLoad() {
+        let demoFloatingTextFieldModel = VCTextFieldViewModel(placeholder: "Floating Label")
+        demoFloatingTextFieldModel.createDareDiceTextFieldViewModelWithFloat()
+        demoFloatingTextFieldModel.validators = [RequiredValidator(placeHolder: "Label")]
+        let demoFloatingText = VCTextField(viewModel: demoFloatingTextFieldModel)
+        stackView.addArrangedSubViews(views: [demoFloatingText])
+        stackView.layoutIfNeeded()
+  }
+```
+tf_ --> TextField properties
+```ruby
+func createDareDiceTextFieldViewModelWithFloat() {
+        self.tf_placeHolderColor = .lightGray
+        self.tf_tintColor = .red
+        self.tf_textColor = .black
+        self.tf_font = UIFont(name: "Helvetica", size: 14)
+        self.validationTextFont = UIFont(name: "Helvetica", size: 12)
+        self.validationTextColor = .red
+        self.tf_addUnderline = true
+        self.isFloating = true
+   }
+```
+![floating](https://user-images.githubusercontent.com/32635950/189193397-5bbf79fc-bcb4-4f1e-9635-295500cbba0d.gif)
+
 ## Author
 
 Egehan Karaköse, egehankarakose@gmail.com
