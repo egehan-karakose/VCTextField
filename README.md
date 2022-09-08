@@ -23,7 +23,7 @@ pod 'VCTextField'
 ## Examples
 The properties starting with "tf_" refers to TextField.
 
-You can use different kind of validators classes, there is a list of validators in example project.
+You can use different kind of validator classes, there is a list of validators in example project (ViewController).
 
 And also there is an UIView extention that allows check and show validators in anywhere in your code 
 
