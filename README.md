@@ -21,7 +21,7 @@ pod 'VCTextField'
 ```
 
 ## Examples
-"tf_" --> TextField properties
+The properties starting with "tf_" refers to TextField.
 
 You can use different kind of validators classes, there is a list of validators in example project.
 
