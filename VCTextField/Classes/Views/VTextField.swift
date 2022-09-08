@@ -22,6 +22,7 @@ public class VCTextFieldViewModel {
     public var validationTextColor: UIColor?
     public var validationTextFont: UIFont?
     public var validationTextLabelHeight: CGFloat?
+    public var isFloating: Bool?
     
     
     public var tf_maxLength: Int = .max
@@ -35,6 +36,7 @@ public class VCTextFieldViewModel {
     public var tf_borderColor: CGColor?
     public var tf_placeHolderColor: UIColor?
     public var tf_height: CGFloat?
+    public var tf_addUnderline: Bool?
     
     public init(placeholder: String?) {
         self.placeholder = placeholder
@@ -44,7 +46,8 @@ public class VCTextFieldViewModel {
 public class VCTextField: UIView {
    
     var label: UILabel = UILabel()
-    public private(set) var viewModel: VCTextFieldViewModel
+    var floatingLabel = UILabel()
+    public var viewModel: VCTextFieldViewModel
     var textField: TextFieldWithInsets?
     
     var isValid: Bool? {
@@ -62,6 +65,7 @@ public class VCTextField: UIView {
     }
     
     var labelHeightAnchor: NSLayoutConstraint?
+    var floatinglabelHeightAnchor: NSLayoutConstraint?
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -70,18 +74,28 @@ public class VCTextField: UIView {
     func addCustomView() {
         let textFieldViewModel = TextFieldWithInsetsViewModel(placeHolder: (viewModel.placeholder)~)
         textFieldViewModel.placeHolderColor = viewModel.tf_placeHolderColor
-        textFieldViewModel.borderColor = viewModel.tf_borderColor
-        textFieldViewModel.borderWidth = viewModel.tf_borderWidth
         textFieldViewModel.tintColor = viewModel.tf_tintColor
         textFieldViewModel.backgroundColor = viewModel.tf_backgroundColor
         textFieldViewModel.textColor = viewModel.tf_textColor
         textFieldViewModel.font = viewModel.tf_font
         textFieldViewModel.allowedCharacters = viewModel.allowedCharacters
         textFieldViewModel.height = viewModel.tf_height
+        textFieldViewModel.addUnderline = viewModel.tf_addUnderline
+        
+        if !(viewModel.isFloating)~ {
+            textFieldViewModel.borderColor = viewModel.tf_borderColor
+            textFieldViewModel.borderWidth = viewModel.tf_borderWidth
+            textFieldViewModel.cornerRadius = viewModel.tf_cornerRadius
+        } else {
+            textFieldViewModel.padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
         
         textFieldViewModel.textChangedHandler = {[weak self] newValue in
             self?.viewModel.text = newValue
             self?.validate()
+            if (self?.viewModel.isFloating)~ {
+                self?.showFloatingLabelAnimation(isShow: (newValue)~.count > 0)
+            }
             self?.viewModel.textChangeHandler?(newValue)
         }
         
@@ -94,6 +108,9 @@ public class VCTextField: UIView {
         textFieldViewModel.textBeginEditingHandler = { [weak self] newValue in
             guard let self = self else { return }
             self.viewModel.clearValidationState()
+            if (self.viewModel.isFloating)~ {
+                self.changeFloatingLabelColor(isActive: true)
+            }
             self.viewModel.beginEditingHandler?(newValue)
         }
         
@@ -103,6 +120,9 @@ public class VCTextField: UIView {
             self.validate()
             if !(self.isValid ?? true) {
                 self.showValidationAnimation(isShow: true)
+            }
+            if (self.viewModel.isFloating)~ {
+                self.changeFloatingLabelColor(isActive: false)
             }
             self.label.text = self.viewModel.errorText
             self.label.isHidden = self.isValid~
@@ -125,24 +145,53 @@ public class VCTextField: UIView {
         label.isHidden = true
         label.font = viewModel.validationTextFont // .regular(of: 12)
         
-        self.addSubview(textField)
-        self.addSubview(label)
+        floatingLabel.translatesAutoresizingMaskIntoConstraints = false
+        floatingLabel.numberOfLines = 1
+        floatingLabel.textColor =  viewModel.tf_placeHolderColor //.appMainBackgroundColor
+        floatingLabel.isHidden = true
+        floatingLabel.font = viewModel.validationTextFont // .regular(of: 12)
+        floatingLabel.text = viewModel.placeholder
         
         labelHeightAnchor = label.heightAnchor.constraint(equalToConstant: 0)
         labelHeightAnchor?.isActive = true
-        NSLayoutConstraint.activate([
-            textField.topAnchor.constraint(equalTo: self.topAnchor),
-            textField.widthAnchor.constraint(equalTo: self.widthAnchor),
-            label.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 5),
-            label.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 10),
-            label.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10),
-            label.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -2)
-        ])
         
+        floatinglabelHeightAnchor = floatingLabel.heightAnchor.constraint(equalToConstant: 0)
+        floatinglabelHeightAnchor?.isActive = true
+        
+        self.addSubview(textField)
+        self.addSubview(label)
+        if (viewModel.isFloating)~ {
+            self.addSubview(floatingLabel)
+            NSLayoutConstraint.activate([
+                textField.widthAnchor.constraint(equalTo: self.widthAnchor),
+                label.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 5),
+                label.rightAnchor.constraint(equalTo: self.rightAnchor),
+                label.leftAnchor.constraint(equalTo: self.leftAnchor),
+                label.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -2),
+                floatingLabel.topAnchor.constraint(equalTo: self.topAnchor),
+                floatingLabel.rightAnchor.constraint(equalTo: self.rightAnchor),
+                floatingLabel.leftAnchor.constraint(equalTo: self.leftAnchor),
+                floatingLabel.bottomAnchor.constraint(equalTo: textField.topAnchor, constant: 2)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                textField.topAnchor.constraint(equalTo: self.topAnchor),
+                textField.widthAnchor.constraint(equalTo: self.widthAnchor),
+                label.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 5),
+                label.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 10),
+                label.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10),
+                label.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -2)
+            ])
+        }
+
     }
     
     public func setText(text: String) {
         textField?.text = text
+        if (viewModel.isFloating)~ {
+            showFloatingLabelAnimation(isShow: !text.isEmpty)
+        }
+        
     }
     
     public func clearValidation() {
@@ -150,7 +199,7 @@ public class VCTextField: UIView {
         showValidationAnimation()
     }
     
-    @discardableResult public func validate(_ forContinue: Bool = false) -> Bool? {
+    public func validate(_ forContinue: Bool = false) -> Bool? {
         if let validators = viewModel.validators {
             isValid = viewModel.validate(with: validators, setErrorText: true)
             if forContinue {
@@ -177,6 +226,21 @@ public class VCTextField: UIView {
         }
         animator.startAnimation()
     }
+    
+    private func showFloatingLabelAnimation(isShow: Bool = false) {
+        floatingLabel.isHidden = !isShow
+        let duration = 0.2
+        let animator = UIViewPropertyAnimator(duration: duration, curve: .easeInOut) {
+            self.floatinglabelHeightAnchor?.constant = isShow ? (self.viewModel.validationTextLabelHeight ?? 14) : 0
+            self.layoutIfNeeded()
+        }
+        animator.startAnimation()
+    }
+    
+    private func changeFloatingLabelColor(isActive: Bool = true) {
+        floatingLabel.textColor = isActive ? viewModel.tf_tintColor : viewModel.tf_placeHolderColor
+    }
+    
     
 }
 

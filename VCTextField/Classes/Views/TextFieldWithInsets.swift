@@ -25,6 +25,7 @@ public class TextFieldWithInsetsViewModel {
     public var borderColor: CGColor?
     public var placeHolderColor: UIColor?
     public var height: CGFloat?
+    public var addUnderline: Bool?
     
     init(placeHolder: String) {
         self.placeHolder = placeHolder
@@ -34,18 +35,20 @@ public class TextFieldWithInsetsViewModel {
 
 public class TextFieldWithInsets: UITextField {
 
+    var bottomLine = CALayer()
+    var borderColor: CGColor?
     let viewModel: TextFieldWithInsetsViewModel
     
     override open func textRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.insetBy(dx: viewModel.padding.left, dy: viewModel.padding.top)
+        return bounds.inset(by: viewModel.padding)
     }
 
     override open func placeholderRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.insetBy(dx: viewModel.padding.left, dy: viewModel.padding.top)
+        return bounds.inset(by: viewModel.padding)
     }
 
     override open func editingRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.insetBy(dx: viewModel.padding.left, dy: viewModel.padding.top)
+        return bounds.inset(by: viewModel.padding)
     }
     
     public init(viewModel: TextFieldWithInsetsViewModel) {
@@ -59,13 +62,24 @@ public class TextFieldWithInsets: UITextField {
     
     public func configureTextField() {
         
-        tintColor = viewModel.tintColor   // .appMainBackgroundColor
-        layer.borderWidth = viewModel.borderWidth ?? 1 //1
+        tintColor = viewModel.tintColor
+        if let borderWidth = viewModel.borderWidth {
+            layer.borderWidth = borderWidth
+        }
         clipsToBounds = true
-        layer.borderColor = viewModel.borderColor  //UIColor.labelBackground.cgColor
-        layer.cornerRadius = viewModel.cornerRadius ?? 15
+        if let borderColor = viewModel.borderColor {
+            layer.borderColor = borderColor
+        }
+        
+        if let cornerRadius = viewModel.cornerRadius {
+            layer.cornerRadius = cornerRadius
+        }
+
         font = viewModel.font //UIFont.regular(of: 14)
-        backgroundColor = viewModel.backgroundColor // .labelBackground
+        if let backColor = viewModel.backgroundColor  {
+            backgroundColor = backColor
+        }
+       
         textColor = viewModel.textColor // .appTextBlack
         attributedPlaceholder = NSAttributedString(
             string: viewModel.placeHolder,
@@ -81,6 +95,26 @@ public class TextFieldWithInsets: UITextField {
         self.text = text
     }
     
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        if (viewModel.addUnderline)~ {
+            addUnderline(borderColor ?? viewModel.placeHolderColor?.cgColor ?? UIColor.lightGray.cgColor)
+        }
+        
+    }
+    
+    func addUnderline(_ withColor: CGColor) {
+        removeUnderline()
+        bottomLine.frame = CGRect(x: viewModel.padding.left, y: self.frame.height - 1, width: self.frame.width - (viewModel.padding.left * 2), height: 1)
+        bottomLine.borderColor = withColor
+        bottomLine.borderWidth = 1
+        self.layer.addSublayer(bottomLine)
+    }
+    
+    func removeUnderline() {
+        bottomLine.removeFromSuperlayer()
+    }
+    
     @objc func textChanged(_ sender: Any?) {
         let newValue = self.text
         viewModel.textChangedHandler?(newValue)
@@ -88,11 +122,14 @@ public class TextFieldWithInsets: UITextField {
     
     @objc func textEndEditing(_ sender: Any?) {
         let newValue = self.text
+        borderColor = viewModel.placeHolderColor?.cgColor
         viewModel.textEndEditingHandler?(newValue)
     }
     
     @objc func textBeginEditing(_ sender: Any?) {
         let newValue = self.text
+        borderColor = viewModel.tintColor?.cgColor
+        
         viewModel.textBeginEditingHandler?(newValue)
     }
     
@@ -140,5 +177,4 @@ extension TextFieldWithInsets: UITextFieldDelegate {
     }
     
 }
-
 

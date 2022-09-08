@@ -58,4 +58,15 @@ public extension VCTextFieldViewModel {
         self.validationTextColor = .blue
     }
     
+    func createDareDiceTextFieldViewModelWithFloat() {
+        self.tf_placeHolderColor = .lightGray
+        self.tf_tintColor = .red
+        self.tf_textColor = .black
+        self.tf_font = UIFont(name: "Helvetica", size: 14)
+        self.validationTextFont = UIFont(name: "Helvetica", size: 12)
+        self.validationTextColor = .red
+        self.tf_addUnderline = true
+        self.isFloating = true
+    }
+    
 }

@@ -20,6 +20,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeHideKeyboardActionWhenTappedAround()
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         let emailFieldModel = VCTextFieldViewModel(placeholder: "E-mail")
         emailFieldModel.createDemoself()
@@ -71,8 +73,13 @@ class ViewController: UIViewController {
         
         // to set text
         demoPasswordTextField.setText(text: "asdasd")
+        
+        let demoFloatingTextFieldModel = VCTextFieldViewModel(placeholder: "Floating Label")
+        demoFloatingTextFieldModel.createDareDiceTextFieldViewModelWithFloat()
+        demoFloatingTextFieldModel.validators = [RequiredValidator(placeHolder: "Label")]
+        let demoFloatingText = VCTextField(viewModel: demoFloatingTextFieldModel)
 
-        stackView.addArrangedSubViews(views: [emailField, demoPasswordField, demoPasswordTextField])
+        stackView.addArrangedSubViews(views: [emailField, demoPasswordField, demoPasswordTextField, demoFloatingText])
         stackView.layoutIfNeeded()
         
     }
@@ -93,5 +100,47 @@ extension UIViewController {
             self?.view.endEditing(true)
         }
     }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.UIKeyboardFrameEndUserInfoKey] as? NSValue,
+                      let currentTextField = UIResponder.currentFirst() as? TextFieldWithInsets else { return }
+
+                // check if the top of the keyboard is above the bottom of the currently focused textbox
+                let keyboardTopY = keyboardFrame.cgRectValue.origin.y
+                let convertedTextFieldFrame = view.convert(currentTextField.frame, from: currentTextField.superview)
+                let textFieldBottomY = convertedTextFieldFrame.origin.y + convertedTextFieldFrame.size.height
+
+                // if textField bottom is below keyboard bottom - bump the frame up
+                if textFieldBottomY > keyboardTopY {
+                    let textBoxY = convertedTextFieldFrame.origin.y
+                    let newFrameY = (textBoxY - keyboardTopY / 2) * -1
+                    view.frame.origin.y = newFrameY
+                }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
 }
 
+public extension UIResponder {
+
+    private struct Static {
+        static weak var responder: UIResponder?
+    }
+
+    /// Finds the current first responder
+    /// - Returns: the current UIResponder if it exists
+    static func currentFirst() -> UIResponder? {
+        Static.responder = nil
+        UIApplication.shared.sendAction(#selector(UIResponder._trap), to: nil, from: nil, for: nil)
+        return Static.responder
+    }
+
+    @objc private func _trap() {
+        Static.responder = self
+    }
+}
