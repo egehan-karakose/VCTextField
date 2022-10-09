@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'VCTextField'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'VCTextField is a framework that allows create custom textfields with specific validation classes.'
 
 # This description is used to generate tags and improve search results.
@@ -21,11 +21,11 @@ Pod::Spec.new do |s|
   "VCTextField is a framework that allows create custom textfields with specific validation classes. You can add different kind of validations to your textfield and with using some controls you can invalida textfield with different kind of situations."
                        DESC
 
-  s.homepage         = 'https://github.com/egehan205/VCTextField'
+  s.homepage         = 'https://github.com/egehan-karakose/VCTextField'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'egehan205' => 'egehankarakose@gmail.com' }
-  s.source           = { :git => 'https://github.com/egehan205/VCTextField.git', :tag => s.version.to_s }
+  s.author           = { 'egehan-karakose' => 'egehankarakose@gmail.com' }
+  s.source           = { :git => 'https://github.com/egehan-karakose/VCTextField.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '13.0'

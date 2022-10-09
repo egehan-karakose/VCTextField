@@ -15,14 +15,15 @@ public extension VCTextFieldViewModel {
         if #available(iOS 13.0, *) {
             self.tf_borderColor = CGColor(red: 0, green: 0, blue: 0, alpha: 1)
         }
+        self.tf_cornerRadius = 15
         self.tf_borderWidth = 1
         self.tf_tintColor = .red
-        self.tf_backgroundColor = .gray
+        self.tf_backgroundColor = .lightGray
         self.tf_textColor = .black
         self.tf_font = UIFont(name: "Helvetica", size: 14)
         self.tf_height = 56
         self.validationTextFont = UIFont(name: "Helvetica", size: 12)
-        self.validationTextColor = .red
+        self.validationTextColor = .blue
     }
     
     func createDemo2self() {

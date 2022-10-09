@@ -2,8 +2,8 @@
 //  ViewController.swift
 //  VCTextField
 //
-//  Created by egehan205 on 09/03/2022.
-//  Copyright (c) 2022 egehan205. All rights reserved.
+//  Created by Egehan Karakose on 09/03/2022.
+//  Copyright (c) 2022 Egehan Karakose. All rights reserved.
 //
 
 import UIKit
@@ -20,12 +20,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeHideKeyboardActionWhenTappedAround()
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        let emailFieldModel = VCTextFieldViewModel(placeholder: "E-mail")
-        emailFieldModel.createDemoself()
-        let emailRegex = "^([0-9a-zA-Z-_]([!#$%&'*+-\\/=?^_`{|}~.-.\\w]*[0-9a-zA-Z-_])*@([0-9a-zA-Z][-\\w]*[0-9a-zA-Z]\\.)+[a-zA-Z]{2,9})$"
         /// Validator Class
         /**
                         
@@ -45,8 +42,12 @@ class ViewController: UIViewController {
          PlateValidator
          
          **/
+        
+        let emailFieldModel = VCTextFieldViewModel(placeholder: "E-mail")
+        emailFieldModel.createDemoself()
+        let emailRegex = "^([0-9a-zA-Z-_]([!#$%&'*+-\\/=?^_`{|}~.-.\\w]*[0-9a-zA-Z-_])*@([0-9a-zA-Z][-\\w]*[0-9a-zA-Z]\\.)+[a-zA-Z]{2,9})$"
         emailFieldModel.validators = [RequiredValidator(placeHolder: "E-mail"),
-                                         RegexValidator(regex: emailRegex, placeholder: "E-mail")]
+                                      RegexValidator(regex: emailRegex, placeholder: "E-mail")]
         emailFieldModel.textChangeHandler = {[weak self] value in
             self?.email = value
         }
@@ -79,8 +80,9 @@ class ViewController: UIViewController {
         demoFloatingTextFieldModel.validators = [RequiredValidator(placeHolder: "Label")]
         let demoFloatingText = VCTextField(viewModel: demoFloatingTextFieldModel)
 
-        stackView.addArrangedSubViews(views: [emailField, demoPasswordField, demoPasswordTextField, demoFloatingText])
+        stackView.addArrangedSubViews(views: [emailField])
         stackView.layoutIfNeeded()
+        view.validateTextFields()
         
     }
 
@@ -103,7 +105,7 @@ extension UIViewController {
     
     @objc func keyboardWillShow(notification: NSNotification) {
         guard let userInfo = notification.userInfo,
-              let keyboardFrame = userInfo[UIResponder.UIKeyboardFrameEndUserInfoKey] as? NSValue,
+              let keyboardFrame = userInfo["UIKeyboardFrameEndUserInfoKey"] as? NSValue,
                       let currentTextField = UIResponder.currentFirst() as? TextFieldWithInsets else { return }
 
                 // check if the top of the keyboard is above the bottom of the currently focused textbox

@@ -54,6 +54,7 @@ public class TextFieldWithInsets: UITextField {
     public init(viewModel: TextFieldWithInsetsViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
+        self.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -168,7 +169,7 @@ extension TextFieldWithInsets: UITextFieldDelegate {
             let mask = JMStringMask(mask: maskString)
             newText = mask.mask(string: newText) ?? newText
         }
-        if string.count > 1 {
+        if string.count > 0 {
             textField.sanitizeText(newText, replacement: string)
             return false
         }

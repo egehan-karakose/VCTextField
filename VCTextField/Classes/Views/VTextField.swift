@@ -81,6 +81,8 @@ public class VCTextField: UIView {
         textFieldViewModel.allowedCharacters = viewModel.allowedCharacters
         textFieldViewModel.height = viewModel.tf_height
         textFieldViewModel.addUnderline = viewModel.tf_addUnderline
+        textFieldViewModel.maskString = viewModel.tf_maskString
+        textFieldViewModel.maxLength = viewModel.tf_maxLength
         
         if !(viewModel.isFloating)~ {
             textFieldViewModel.borderColor = viewModel.tf_borderColor

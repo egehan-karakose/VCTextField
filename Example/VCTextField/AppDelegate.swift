@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  VCTextField
 //
-//  Created by egehan205 on 09/03/2022.
-//  Copyright (c) 2022 egehan205. All rights reserved.
+//  Created by Egehan Karakose on 09/03/2022.
+//  Copyright (c) 2022 Egehan Karakose. All rights reserved.
 //
 
 import UIKit

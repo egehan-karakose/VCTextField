@@ -1,6 +1,6 @@
 # VCTextField
 
-[![CI Status](https://img.shields.io/travis/egehan205/VCTextField.svg?style=flat)](https://travis-ci.org/egehan205/VCTextField)
+[![CI Status](https://img.shields.io/travis/egehan-karakose/VCTextField.svg?style=flat)](https://travis-ci.org/egehan-karakose/VCTextField)
 [![Version](https://img.shields.io/cocoapods/v/VCTextField.svg?style=flat)](https://cocoapods.org/pods/VCTextField)
 [![License](https://img.shields.io/cocoapods/l/VCTextField.svg?style=flat)](https://cocoapods.org/pods/VCTextField)
 [![Platform](https://img.shields.io/cocoapods/p/VCTextField.svg?style=flat)](https://cocoapods.org/pods/VCTextField)

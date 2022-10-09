@@ -155,16 +155,18 @@ public class MaximumValueValidator: Validator {
 public class PhoneNumberValidator: Validator {
     
     public private(set) var message: String
+    public private(set) var lenght: Int
     
-    public init(message: String = "The Phone Number you entered is incorrect.") {
+    public init(message: String = "The Phone Number you entered is incorrect.", lenght: Int = 10) {
         self.message = message
+        self.lenght = lenght
     }
     
     public func validate(with text: String?) -> Bool {
-        if text == nil || text?.removingSpaces.count != 10 { return false }
+        if text == nil || text?.removingSpaces.count != lenght { return false }
         
         var allowedCharacters = CharacterSet.decimalDigits
-        allowedCharacters.insert(charactersIn: " ")
+        allowedCharacters.insert(charactersIn: "() ")
         let unwantedCharacters = text!.trimmingCharacters(in: allowedCharacters)
         if !unwantedCharacters.isEmpty { return false }
         
