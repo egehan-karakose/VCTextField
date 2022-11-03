@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'VCTextField'
-  s.version          = '0.1.2'
+  s.version          = '0.1.3'
   s.summary          = 'VCTextField is a framework that allows create custom textfields with specific validation classes.'
 
 # This description is used to generate tags and improve search results.
