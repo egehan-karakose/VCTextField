@@ -26,6 +26,7 @@ public class TextFieldWithInsetsViewModel {
     public var placeHolderColor: UIColor?
     public var height: CGFloat?
     public var addUnderline: Bool?
+    public var banLeadingSpace: Bool?
     
     init(placeHolder: String) {
         self.placeHolder = placeHolder
@@ -117,6 +118,10 @@ public class TextFieldWithInsets: UITextField {
     }
     
     @objc func textChanged(_ sender: Any?) {
+       
+        if (viewModel.banLeadingSpace)~ {
+            self.text = self.text?.removingLeadingSpaces()
+        }
         let newValue = self.text
         viewModel.textChangedHandler?(newValue)
     }

@@ -80,7 +80,7 @@ class ViewController: UIViewController {
         demoFloatingTextFieldModel.validators = [RequiredValidator(placeHolder: "Label")]
         let demoFloatingText = VCTextField(viewModel: demoFloatingTextFieldModel)
 
-        stackView.addArrangedSubViews(views: [emailField])
+        stackView.addArrangedSubViews(views: [emailField , demoFloatingText, demoPasswordField])
         stackView.layoutIfNeeded()
         view.validateTextFields()
         

@@ -17,12 +17,15 @@ public class VCTextFieldViewModel {
     var errorText: String? = nil
     public var clearValidation = Observable<Bool>()
     public var validated: BoolHandler?
-    public var allowedCharacters: CharacterSet? = .alphanumerics
-    public var contentType: UITextContentType? = .username
+    public var allowedCharacters: CharacterSet?
+    public var contentType: UITextContentType?
     public var validationTextColor: UIColor?
     public var validationTextFont: UIFont?
     public var validationTextLabelHeight: CGFloat?
     public var isFloating: Bool?
+    public var keyboardType: UIKeyboardType?
+    public var setCursorToCenter: Bool?
+    public var banLeadingSpace: Bool?
     
     
     public var tf_maxLength: Int = .max
@@ -47,6 +50,9 @@ public class VCTextField: UIView {
    
     var label: UILabel = UILabel()
     var floatingLabel = UILabel()
+    var rightButton = UIButton()
+    
+    private var rightButtonHandler: VoidHandler?
     public var viewModel: VCTextFieldViewModel
     var textField: TextFieldWithInsets?
     
@@ -83,6 +89,7 @@ public class VCTextField: UIView {
         textFieldViewModel.addUnderline = viewModel.tf_addUnderline
         textFieldViewModel.maskString = viewModel.tf_maskString
         textFieldViewModel.maxLength = viewModel.tf_maxLength
+        textFieldViewModel.banLeadingSpace = viewModel.banLeadingSpace
         
         if !(viewModel.isFloating)~ {
             textFieldViewModel.borderColor = viewModel.tf_borderColor
@@ -94,7 +101,6 @@ public class VCTextField: UIView {
         
         textFieldViewModel.textChangedHandler = {[weak self] newValue in
             self?.viewModel.text = newValue
-            self?.validate()
             if (self?.viewModel.isFloating)~ {
                 self?.showFloatingLabelAnimation(isShow: (newValue)~.count > 0)
             }
@@ -140,6 +146,13 @@ public class VCTextField: UIView {
         textField.textContentType = viewModel.contentType
         textField.isSecureTextEntry = viewModel.contentType == .password || viewModel.contentType == .newPassword
         textField.translatesAutoresizingMaskIntoConstraints = false
+        if let type = viewModel.keyboardType {
+            textField.keyboardType = type
+        }
+        
+        if let setCursor = viewModel.setCursorToCenter, setCursor {
+            textField.textAlignment = .center
+        }
        
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
@@ -185,11 +198,31 @@ public class VCTextField: UIView {
                 label.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -2)
             ])
         }
-
+        
+    }
+    
+    public func addRightButton(title: String, color: UIColor = .black, handler: @escaping VoidHandler) {
+        rightButtonHandler = handler
+        rightButton.tintColor = .black
+        rightButton.setTitle(title, for: .normal)
+        rightButton.setTitleColor(.black, for: .normal)
+        rightButton.addTarget(self, action: #selector(buttonHandler), for: .touchUpInside)
+        
+        textField?.rightViewMode = .always
+        
+    }
+    
+    public func hideRightButton(_ hide: Bool) {
+        textField?.rightView = hide ? nil : rightButton
+    }
+    
+    @objc func buttonHandler() {
+        rightButtonHandler?()
     }
     
     public func setText(text: String) {
         textField?.text = text
+        viewModel.text = text
         if (viewModel.isFloating)~ {
             showFloatingLabelAnimation(isShow: !text.isEmpty)
         }
@@ -201,7 +234,7 @@ public class VCTextField: UIView {
         showValidationAnimation()
     }
     
-    public func validate(_ forContinue: Bool = false) -> Bool? {
+    @discardableResult public func validate(_ forContinue: Bool = false) -> Bool? {
         if let validators = viewModel.validators {
             isValid = viewModel.validate(with: validators, setErrorText: true)
             if forContinue {
@@ -243,9 +276,7 @@ public class VCTextField: UIView {
         floatingLabel.textColor = isActive ? viewModel.tf_tintColor : viewModel.tf_placeHolderColor
     }
     
-    
 }
-
 extension VCTextFieldViewModel: Validatable {
     
     // swiftlint:disable cyclomatic_complexity

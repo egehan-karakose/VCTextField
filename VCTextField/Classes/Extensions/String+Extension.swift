@@ -35,4 +35,15 @@ extension String {
         guard let characterSet = characterSet else { return self }
         return self.components(separatedBy: characterSet.inverted).joined(separator: string)
     }
+    
+    public func removingLeadingSpaces() -> String {
+        if self == " " {
+            return ""
+        }
+        guard let index = firstIndex(where: { !CharacterSet(charactersIn: String($0)).isSubset(of: .whitespaces) }) else {
+            return self
+        }
+        return String(self[index...])
+    }
+    
 }
